@@ -1,10 +1,12 @@
-# Renewed-Banking 2.0.0
+# Vista-Banking 2.0.0
+Support the original dev and buy them a coffee
+<br>
+<br>
 <a href='https://ko-fi.com/ushifty' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
  
- [Renewed Discord](https://discord.gg/P3RMrbwA8n)
-
 # Project Description
-This resource is created & maintained by uShifty#1733 and was not a fork of any of the other banking resources.
+
+This resource was created & maintained by uShifty#1733, but has been forked and modified for Vista RP
 The legacy UI was heavily inspired by No Pixel 3.0
 The 2.0 UI was redesigned by [qwadebot](https://github.com/qw-scripts) Edited by [uShifty](https://github.com/uShifty)
 
