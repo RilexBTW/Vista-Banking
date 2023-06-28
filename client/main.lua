@@ -12,24 +12,31 @@ local function nuiHandler(val)
 end
 
 local function openBankUI(isAtm)
-    SendNUIMessage({action = 'setLoading', status = true})
-    nuiHandler(true)
-    lib.callback('renewed-banking:server:initalizeBanking', false, function(accounts)
-        if not accounts then
-            nuiHandler(false)
-            lib.notify({title = locale('bank_name'), description = locale('loading_failed'), type = 'error'})
-            return
-        end
-        SetTimeout(1000, function()
-            SendNUIMessage({
-                action = 'setVisible',
-                status = isVisible,
-                accounts = accounts,
-                loading = false,
-                atm = isAtm
-            })
+    card = "mastercard" or "visa"
+    cardCount = exports.ox_inventory:GetItem(source, card, metadata, true)
+    if cardCount >= 1 then 
+        SendNUIMessage({action = 'setLoading', status = true})
+        nuiHandler(true)
+        lib.callback('renewed-banking:server:initalizeBanking', false, function(accounts)
+            if not accounts then
+                nuiHandler(false)
+                lib.notify({title = locale('bank_name'), description = locale('loading_failed'), type = 'error'})
+                return
+            end
+            SetTimeout(1000, function()
+                SendNUIMessage({
+                    action = 'setVisible',
+                    status = isVisible,
+                    accounts = accounts,
+                    loading = false,
+                    atm = isAtm
+                })
+            end)
         end)
-    end)
+    else
+        print('error: you do not have a debit card')
+        QBCore.Functions.Notify('You need a debit card to access the ATM, silly.', 'success', 5000)
+    end
 end
 
 RegisterNetEvent('Renewed-Banking:client:openBankUI', function(data)
