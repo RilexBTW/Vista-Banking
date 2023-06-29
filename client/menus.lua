@@ -33,6 +33,31 @@ RegisterNetEvent("Renewed-Banking:client:createAccountMenu", function()
     end
 end)
 
+
+RegisterNetEvent("Renewed-Banking:client:request_card", function()
+    local Player = GetPlayerObject(source)
+    lib.registerContext({
+        id = 'renewed_banking_request_card',
+        title = locale("request_card"),
+        position = 'top-right',
+        options = {
+            {
+                title = locale("request_mastercard"),
+                icon = 'credit-card',
+                metadata = {locale("mastercard")},
+                event = 'exports.ox_inventory:GiveItem(source, "mastercard", 1)'
+            },
+            {
+                title = locale("request_visa"),
+                icon = 'credit-card',
+                metadata = {locale("visa")},
+                event = 'exports.ox_inventory:GiveItem(source, "visa", 1)'
+            }
+        }
+    })
+    lib.showContext("renewed_banking_request_card")
+end)
+
 RegisterNetEvent("Renewed-Banking:client:accountsMenu", function(data)
     local menuOpts = {}
     if #data >= 1 then

@@ -12,9 +12,6 @@ local function nuiHandler(val)
 end
 
 local function openBankUI(isAtm)
-    card = "mastercard" or "visa"
-    cardCount = exports.ox_inventory:GetItem(source, card, metadata, true)
-    if cardCount >= 1 then 
         SendNUIMessage({action = 'setLoading', status = true})
         nuiHandler(true)
         lib.callback('renewed-banking:server:initalizeBanking', false, function(accounts)
@@ -33,36 +30,38 @@ local function openBankUI(isAtm)
                 })
             end)
         end)
-    else
-        print('error: you do not have a debit card')
-        QBCore.Functions.Notify('You need a debit card to access the ATM, silly.', 'success', 5000)
-    end
 end
 
 RegisterNetEvent('Renewed-Banking:client:openBankUI', function(data)
-    local txt = data.atm and locale('open_atm') or locale('open_bank')
-    TaskStartScenarioInPlace(PlayerPed, 'PROP_HUMAN_ATM', 0, true)
-    if progressBar({
-        label = txt,
-        duration = math.random(3000,5000),
-        position = 'bottom',
-        useWhileDead = false,
-        allowCuffed = false,
-        allowFalling = false,
-        canCancel = true,
-        disable = {
-            car = true,
-            move = true,
-            combat = true,
-            mouse = false,
-        }
-    }) then
-        openBankUI(data.atm)
-        Wait(500)
-        ClearPedTasksImmediately(PlayerPed)
+    cardCount = exports.ox_inventory:Search(source, count, {'visa', 'mastercard'})
+    if cardCount and items.visa >= 1 or items.mastercard >= 1 then 
+        local txt = data.atm and locale('open_atm') or locale('open_bank')
+        TaskStartScenarioInPlace(PlayerPed, 'PROP_HUMAN_ATM', 0, true)
+        if progressBar({
+            label = txt,
+            duration = math.random(3000,5000),
+            position = 'bottom',
+            useWhileDead = false,
+            allowCuffed = false,
+            allowFalling = false,
+            canCancel = true,
+            disable = {
+                car = true,
+                move = true,
+                combat = true,
+                mouse = false,
+            }
+        }) then
+            openBankUI(data.atm)
+            Wait(500)
+            ClearPedTasksImmediately(PlayerPed)
+        else
+            ClearPedTasksImmediately(PlayerPed)
+            lib.notify({title = locale('bank_name'), description = locale('canceled'), type = 'error'})
+        end
     else
-        ClearPedTasksImmediately(PlayerPed)
-        lib.notify({title = locale('bank_name'), description = locale('canceled'), type = 'error'})
+        print('error: you do not have a debit card')
+        QBCore.Functions.Notify('You need a debit card to access the ATM, silly.', 'success', 5000)
     end
 end)
 
@@ -135,6 +134,7 @@ function CreatePeds()
         end
     }}
     exports.ox_target:addLocalEntity(peds.basic, targetOpts)
+
     targetOpts[#targetOpts+1]={
         name = 'renewed_banking_accountmng',
         event = 'Renewed-Banking:client:accountManagmentMenu',
@@ -145,9 +145,20 @@ function CreatePeds()
             return distance < 4.5
         end
     }
+
+    targetOpts[#targetOpts+1]={
+        name = 'renewed_banking_reqcard',
+        event = 'Renewed-Banking:client:request_card',
+        icon = 'fas fa-money-check',
+        label = locale('request_card'),
+        atm = false,
+        canInteract = function(_, distance)
+            return distance < 4.5
+        end
+    }
     exports.ox_target:addLocalEntity(peds.adv, targetOpts)
     pedSpawned = true
-end
+end 
 
 function DeletePeds()
     if not pedSpawned then return end
@@ -166,7 +177,7 @@ AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
     exports.ox_target:removeModel(Config.atms, {'renewed_banking_openui'})
     exports.ox_target:removeEntity(peds.basic, {'renewed_banking_openui'})
-    exports.ox_target:removeEntity(peds.adv, {'renewed_banking_openui','renewed_banking_accountmng'})
+    exports.ox_target:removeEntity(peds.adv, {'renewed_banking_openui','renewed_banking_accountmng', 'renewed_banking_reqcard'})
     DeletePeds()
 end)
 

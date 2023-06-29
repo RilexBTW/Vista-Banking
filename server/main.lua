@@ -361,6 +361,7 @@ RegisterNetEvent('Renewed-Banking:server:createNewAccount', function(accountid)
     })
 end)
 
+
 RegisterNetEvent("Renewed-Banking:server:getPlayerAccounts", function()
     local Player = GetPlayerObject(source)
     local cid = GetIdentifier(Player)
