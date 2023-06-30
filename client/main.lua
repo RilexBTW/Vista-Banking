@@ -33,8 +33,10 @@ local function openBankUI(isAtm)
 end
 
 RegisterNetEvent('Renewed-Banking:client:openBankUI', function(data)
-    cardCount = exports.ox_inventory:Search(source, count, {'visa', 'mastercard'})
-    if cardCount and items.visa >= 1 or items.mastercard >= 1 then 
+    local hasVisa = QBCore.Functions.HasItem('visa')
+    local hasMastercard = QBCore.Functions.HasItem('mastercard')
+    print('Debug: Opening UI and checking for debit card')
+    if hasVisa or hasMastercard then
         local txt = data.atm and locale('open_atm') or locale('open_bank')
         TaskStartScenarioInPlace(PlayerPed, 'PROP_HUMAN_ATM', 0, true)
         if progressBar({

@@ -628,8 +628,23 @@ lib.addCommand('givecash', {
     end
 end)
 
+RegisterNetEvent("Renewed-Banking:server:grantvisa")
+AddEventHandler("Renewed-Banking:server:grantvisa", function()
+    exports.ox_inventory:AddItem(source, 'visa', 1)
+    print('granting visa')
+end)
+
+RegisterNetEvent("Renewed-Banking:server:grantmastercard")
+AddEventHandler("Renewed-Banking:server:grantmastercard", function()
+    exports.ox_inventory:AddItem(source, 'mastercard', 1)
+    print('granting mastercard')
+end)
+
+
 function ExportHandler(resource, name, cb)
     AddEventHandler(('__cfx_export_%s_%s'):format(resource, name), function(setCB)
         setCB(cb)
     end)
 end
+
+

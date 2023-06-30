@@ -35,7 +35,6 @@ end)
 
 
 RegisterNetEvent("Renewed-Banking:client:request_card", function()
-    local Player = GetPlayerObject(source)
     lib.registerContext({
         id = 'renewed_banking_request_card',
         title = locale("request_card"),
@@ -45,17 +44,25 @@ RegisterNetEvent("Renewed-Banking:client:request_card", function()
                 title = locale("request_mastercard"),
                 icon = 'credit-card',
                 metadata = {locale("mastercard")},
-                event = 'exports.ox_inventory:GiveItem(source, "mastercard", 1)'
+                event = 'Renewed-Banking:client:mastercard'
             },
             {
                 title = locale("request_visa"),
                 icon = 'credit-card',
                 metadata = {locale("visa")},
-                event = 'exports.ox_inventory:GiveItem(source, "visa", 1)'
+                event = 'Renewed-Banking:client:visa'
             }
         }
     })
     lib.showContext("renewed_banking_request_card")
+end)
+
+RegisterNetEvent("Renewed-Banking:client:mastercard", function()
+    TriggerServerEvent("Renewed-Banking:server:grantmastercard")
+end)
+
+RegisterNetEvent("Renewed-Banking:client:visa", function()
+    TriggerServerEvent("Renewed-Banking:server:grantvisa")
 end)
 
 RegisterNetEvent("Renewed-Banking:client:accountsMenu", function(data)
